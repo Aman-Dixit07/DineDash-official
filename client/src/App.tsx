@@ -6,8 +6,28 @@ import ResetPassword from "./auth/ResetPassword";
 import VerifyEmail from "./auth/VerifyEmail";
 import MainLayout from "./layout/MainLayout";
 import HeroSection from "./components/HeroSection";
+import ProfilePage from "./components/ProfilePage";
+import SearchPage from "./components/SearchPage";
 
 const appRouter = createBrowserRouter([
+  {
+    path:"/",
+    element:(<MainLayout/>),
+      children:[
+        {
+          path:"/",
+          element:(<HeroSection/>)
+        },
+        {
+          path:"/profile",
+          element:(<ProfilePage/>)
+        },
+        {
+          path:"/search/:text",
+          element:(<SearchPage/>)
+        }
+      ] 
+  },
   {
     path:"/signup",
     element:(<SignUp/>)
@@ -26,16 +46,7 @@ const appRouter = createBrowserRouter([
     path:"/verify-email",
     element:(<VerifyEmail/>)
   },
-  {
-    path:"/",
-    element:(<MainLayout/>),
-      children:[
-        {
-          path:"/",
-          element:(<HeroSection/>)
-        },
-      ] 
-  }
+  
 ]
 )
 
