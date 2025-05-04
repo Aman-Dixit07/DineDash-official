@@ -118,11 +118,11 @@ const Restaurant = () => {
                   }}
                   type="text"
                 />
-                {/* {errors && (
+                {errors && (
                   <span className="text-xs text-red-600 font-medium">
                     {errors.cuisines}
                   </span>
-                )} */}
+                )}
               </div>
 
               <div>
