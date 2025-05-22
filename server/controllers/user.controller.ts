@@ -101,10 +101,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
 };
 
 
-export const verifyEmail = async (
-    req: Request,
-    res: Response
-  ): Promise<any> => {
+export const verifyEmail = async (req: Request,res: Response): Promise<any> => {
     try {
       const { verificationCode } = req.body;
   
@@ -157,10 +154,7 @@ export const logout = async (req: Request, res: Response): Promise<any> => {
 };
   
 
-export const forgotPassword = async (
-    req: Request,
-    res: Response
-  ): Promise<any> => {
+export const forgotPassword = async (req: Request,res: Response): Promise<any> => {
     try {
       const { email } = req.body;
       const user = await User.findOne({ email });
@@ -198,10 +192,7 @@ export const forgotPassword = async (
 };
   
 
-export const resetPassword = async (
-    req: Request,
-    res: Response
-  ): Promise<any> => {
+export const resetPassword = async (req: Request,res: Response): Promise<any> => {
     try {
       const { token } = req.params;
       const { newPassword } = req.body;
@@ -268,10 +259,7 @@ export const checkAuth = async (req: Request, res: Response): Promise<any> => {
 };
 
   
-export const updateProfile = async (
-    req: Request,
-    res: Response
-  ): Promise<any> => {
+export const updateProfile = async (req: Request,res: Response): Promise<any> => {
     try {
       const userId = req.id;
   

@@ -7,6 +7,10 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import userRoute from "./routes/user.route";
+import restaurantRoute from "./routes/restaurant.route";
+import orderRoute from "./routes/order.route";
+import menuRoute from "./routes/menu.route";
+
 
 dotenv.config();
 const app = express();
@@ -32,6 +36,9 @@ app.get("/", (req: Request, res: Response) => {
 
 //API'S
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/restaurant", restaurantRoute);
+app.use("/api/v1/menu", menuRoute);
+app.use("/api/v1/order", orderRoute);
 
 //LISTENING THE SERVER
 app.listen(port,()=>{

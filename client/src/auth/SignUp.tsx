@@ -1,32 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, LockKeyhole, Loader2, User, PhoneOutgoing } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Mail, Loader2, User, PhoneOutgoing, LockKeyhole } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { userSignupSchema, SignupInputState } from "../schema/userSchema";
+import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { SignupInputState, userSignupSchema } from "@/schema/userSchema";
+import { useUserStore } from "@/store/useUserStore";
 
-
-const SignUp = () => {
-
-  const [input,setInput] = useState<SignupInputState>({
+const Signup = () => {
+  const [input, setInput] = useState<SignupInputState>({
     email: "",
-      password: "",
-      fullname: "",
-      contact: "",
-  })
-  
+    password: "",
+    fullname: "",
+    contact: "",
+  });
+  const { loading, signup } = useUserStore();
+  const navigate = useNavigate();
+
   const [errors, setErrors] = useState<Partial<SignupInputState>>({});
-  
-  const loading = false;
-  
+
   const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInput({ ...input, [name]: value });
-    setErrors({...errors,[name]:undefined});
+    setErrors({ ...errors, [name]: undefined });
   };
-  
-  const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
+
+  const signupSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = userSignupSchema.safeParse(input);
     if (!result.success) {
@@ -34,13 +33,21 @@ const SignUp = () => {
       setErrors(fieldErrors as Partial<SignupInputState>);
       return;
     }
+
+    //api implementaion
+
+    try {
+      await signup(input);
+      navigate("/verify-email");
+    } catch (error) {
+      console.log(error);
+    }
   };
-    //api implementation
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <form
-        onSubmit={onSubmitHandler}
+        onSubmit={signupSubmitHandler}
         className="md:p-8 w-full max-w-md rounded-lg md:border border-gray-200 mx-4"
       >
         <div className="mb-4 text-center">
@@ -53,8 +60,8 @@ const SignUp = () => {
               placeholder="Full Name"
               name="fullname"
               className="pl-10 focus-visible:ring-1"
-              value={input.fullname}
               onChange={changeEventHandler}
+              value={input.fullname}
             />
             <User className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
             {errors && (
@@ -69,8 +76,8 @@ const SignUp = () => {
               placeholder="Email"
               name="email"
               className="pl-10 focus-visible:ring-1"
-              value={input.email}
               onChange={changeEventHandler}
+              value={input.email}
             />
             <Mail className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
             {errors && (
@@ -85,10 +92,11 @@ const SignUp = () => {
               placeholder="Password"
               name="password"
               className="pl-10 focus-visible:ring-1"
-              value={input.password}
               onChange={changeEventHandler}
+              value={input.password}
             />
             <LockKeyhole className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
+
             {errors && (
               <span className="text-xs text-red-500">{errors.password}</span>
             )}
@@ -101,8 +109,8 @@ const SignUp = () => {
               placeholder="Contact"
               name="contact"
               className="pl-10 focus-visible:ring-1"
-              value={input.contact}
               onChange={changeEventHandler}
+              value={input.contact}
             />
             <PhoneOutgoing className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
             {errors && (
@@ -110,12 +118,11 @@ const SignUp = () => {
             )}
           </div>
         </div>
-
         <div className="mb-10">
           {loading ? (
-            <Button disabled className="w-full bg-orange hover:bg-hoverOrange">
+            <Button className="w-full bg-orange hover:bg-hoverOrange" disabled>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Please wait...
+              Please Wait...
             </Button>
           ) : (
             <Button
@@ -137,7 +144,7 @@ const SignUp = () => {
         </p>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default Signup;

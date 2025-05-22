@@ -40,13 +40,13 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Separator } from "./ui/separator";
+import { useUserStore } from "@/store/useUserStore";
 
 const Navbar = () => {
 
-    const admin = true;
-    const loading = false;
-    const cart=3;
+  const { loading, logout, user } = useUserStore();
 
+  const cart = [1, 2, 3];
   return (
     <div className="max-w-7xl  mx-auto">
     <div className="flex items-center justify-between h-14">
@@ -103,19 +103,19 @@ const Navbar = () => {
 
           <Link to="/cart" className="relative cursor-pointer">
             <ShoppingCart />
-            {cart> 0 && (
+            {cart.length && (
               <Button
                 size={"icon"}
                 className="absolute -inset-y-3 left-2 text-xs rounded-full w-4 h-4 bg-red-500 hover:bg-red-500"
               >
-                {cart}
+                {cart.length}
               </Button>
             )}
           </Link>
 
           <div>
             <Avatar>
-              <AvatarImage src="" alt="profilephoto" />
+              <AvatarImage src={user?.profilePicture} alt="profilephoto" />
 
               <AvatarFallback>AD</AvatarFallback>
             </Avatar>
