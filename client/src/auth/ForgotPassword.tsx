@@ -2,17 +2,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, Loader2 } from "lucide-react";
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
+import { useUserStore } from "@/store/useUserStore";
 
 const ForgotPassword = () => {
-
-    const [email, setEmail] = useState<string>("");
-
-    const loading = false;
-
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+const [email, setEmail] = useState<string>("");
+  const { loading, forgotPassword } = useUserStore();
+  const navigate = useNavigate();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await forgotPassword(email);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
     }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen w-full">

@@ -1,11 +1,11 @@
-import Login from "./auth/Login";
+import {createBrowserRouter,Navigate,RouterProvider,} from "react-router-dom";
 import SignUp from "./auth/SignUp";
+import Login from "./auth/Login";
 import ForgotPassword from "./auth/ForgotPassword";
-import { createBrowserRouter, RouterProvider , Navigate } from "react-router-dom";
 import ResetPassword from "./auth/ResetPassword";
 import VerifyEmail from "./auth/VerifyEmail";
-import MainLayout from "./layout/MainLayout";
 import HeroSection from "./components/HeroSection";
+import MainLayout from "./layout/MainLayout";
 import ProfilePage from "./components/ProfilePage";
 import SearchPage from "./components/SearchPage";
 import RestaurantDetailPage from "./components/RestaurantDetailPage";
@@ -14,9 +14,10 @@ import SuccessPage from "./components/SuccessPage";
 import RestaurantPage from "./admin/RestaurantPage";
 import AddMenu from "./admin/AddMenu";
 import Order from "./admin/Order";
-import { useUserStore } from "./store/useUserStore";
 import { ReactNode, useEffect } from "react";
+import { useUserStore } from "./store/useUserStore";
 import Loading from "./components/Loading";
+import { useThemeStore } from "./store/useThemeStore";
 
 const AuthenticatedUser = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, user } = useUserStore();
@@ -138,9 +139,12 @@ const appRouter = createBrowserRouter([
 const App = () => {
 
   const { checkAuthentication, isCheckingAuth } = useUserStore();
+   const initializeTheme = useThemeStore((state) => state.initializeTheme);
+
 
   useEffect(() => {
     checkAuthentication();
+    initializeTheme();
   }, [checkAuthentication]);
 
   if (isCheckingAuth) return <Loading />;

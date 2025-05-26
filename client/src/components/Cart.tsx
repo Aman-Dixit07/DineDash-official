@@ -11,17 +11,31 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import HeroImage from "@/assets/pizza.png";
 import CheckoutConfirmPage from "./CheckoutConfirmPage";
+import { useCartStore } from "@/store/useCartStore";
+import { CartItem } from "@/types/cartTypes";
 
 
 const Cart = () => {
     const [open, setOpen] = useState<boolean>(false);
 
+    const {
+    cart,
+    decrementQuantity,
+    incrementQuantity,
+    clearCart,
+    removeFromCart,
+  } = useCartStore();
+
+  const totalAmount = cart.reduce((acc, ele) => {
+    return acc + ele.price * ele.quantity;
+  }, 0);
+
+
   return (
     <div className="flex flex-col max-w-7xl mx-auto my-10">
     <div className="flex justify-end">
-      <Button variant={"link"}>Clear All</Button>
+      <Button variant={"link"} onClick={()=>clearCart()}>Clear All</Button>
     </div>
     <Table>
       <TableHeader>
@@ -35,22 +49,23 @@ const Cart = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {[1, 2, 3].map((_, idx: number) => (
-          <TableRow key={idx}>
+        {cart.map((item: CartItem) => (
+          <TableRow key={item._id}>
             <TableCell>
               <Avatar>
-                <AvatarImage src={HeroImage} alt="Food Picture" />
-                <AvatarFallback>AT</AvatarFallback>
+                <AvatarImage src={item.image} alt="Food Picture" />
+                <AvatarFallback>AD</AvatarFallback>
               </Avatar>
             </TableCell>
-            <TableCell> {"CartITem Name"}</TableCell>
-            <TableCell> {"CartITem Price"}</TableCell>
+            <TableCell> {item.name}</TableCell>
+            <TableCell> {item.price}</TableCell>
             <TableCell>
               <div className="w-fit flex items-center rounded-full border border-gray-100 dark:border-gray-800 shadow-md">
                 <Button
                   size={"icon"}
                   variant={"outline"}
                   className="rounded-full bg-gray-200"
+                  onClick={() => decrementQuantity(item._id)}
                 >
                   <Minus />
                 </Button>
@@ -60,9 +75,10 @@ const Cart = () => {
                   variant={"outline"}
                   disabled
                 >
-                  {"2"}
+                  {item.quantity}
                 </Button>
                 <Button
+                onClick={() => incrementQuantity(item._id)}
                   size={"icon"}
                   variant={"outline"}
                   className="rounded-full bg-gray-200"
@@ -71,9 +87,9 @@ const Cart = () => {
                 </Button>
               </div>
             </TableCell>
-            <TableCell>₹{"Total Amount"}</TableCell>
+            <TableCell>₹{item.price * item.quantity}</TableCell>
             <TableCell className="text-right">
-              <Button size={"sm"} className="bg-orange hover:bg-hoverOrange">
+              <Button onClick={() => removeFromCart(item._id)} size={"sm"} className="bg-orange hover:bg-hoverOrange">
                 Remove
               </Button>
             </TableCell>
@@ -83,7 +99,7 @@ const Cart = () => {
       <TableFooter>
         <TableRow className="text-2xl font-bold">
           <TableCell colSpan={5}>Total</TableCell>
-          <TableCell className="text-right">₹{2200}</TableCell>
+          <TableCell className="text-right">₹{totalAmount}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>

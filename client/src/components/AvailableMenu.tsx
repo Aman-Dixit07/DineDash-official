@@ -1,17 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter } from "./ui/card";
+import { useCartStore } from "@/store/useCartStore";
+import { MenuItem } from "@/types/restaurantType";
 
-type MenuType = {
-  _id: string;
-  image: string;
-  name: string;
-  price: string;
-  description: string;
-};
 
-const AvailableMenu = ({ menus }: { menus: MenuType[] }) => {
+const AvailableMenu = ({ menus }: { menus: MenuItem[] }) => {
   const navigate = useNavigate();
+  const { addToCart } = useCartStore();
 
   return (
     <div className="md:p-4">
@@ -19,7 +15,7 @@ const AvailableMenu = ({ menus }: { menus: MenuType[] }) => {
         Available Menus
       </h1>
       <div className="grid lg:grid-cols-3 space-y-4 lg:space-y-0 ">
-        {menus.map((menu: MenuType) => (
+        {menus.map((menu: MenuItem) => (
           <Card
             key={menu._id}
             className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden"
@@ -43,6 +39,7 @@ const AvailableMenu = ({ menus }: { menus: MenuType[] }) => {
             <CardFooter className="p-4">
               <Button
                 onClick={() => {
+                  addToCart(menu);
                   navigate("/cart");
                 }}
                 className="w-full bg-orange hover:bg-hoverOrange"

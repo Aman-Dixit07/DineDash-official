@@ -11,6 +11,11 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
+import { useCartStore } from "@/store/useCartStore";
+import { useRestaurantStore } from "@/store/useRestaurantStore";
+import { CheckoutSessionRequest } from "@/types/orderType";
+import { useOrderStore } from "@/store/useOrderStore";
 
 
 const CheckoutConfirmPage = ({
@@ -19,17 +24,20 @@ const CheckoutConfirmPage = ({
   }: {
     open: boolean;
     setOpen: React.Dispatch<SetStateAction<boolean>>;
-  }) => {
+  }) => { const { user } = useUserStore();
+
     const [input, setInput] = useState({
-      name: "",
-      email: "",
-      contact: "",
-      address: "",
-      city: "",
-      country: "",
-    });
-  
-    const loading = false;
+    name: user?.fullname || "",
+    email: user?.email || "",
+    contact: user?.contact.toString() || "",
+    address: user?.address || "",
+    city: user?.city || "",
+    country: user?.country || "",
+  });
+
+  const { cart, clearCart } = useCartStore();
+  const { restaurant } = useRestaurantStore();
+  const { createCheckoutSession, loading } = useOrderStore();
   
     const changeEventHanlder = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -39,8 +47,25 @@ const CheckoutConfirmPage = ({
   
     const checkoutHandler = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      console.log("hello aman");
       //api implementaion starts here
+
+       try {
+      const checkoutData: CheckoutSessionRequest = {
+        cartItems: cart.map((cartItem) => ({
+          menuId: cartItem._id,
+          name: cartItem.name,
+          image: cartItem.image,
+          price: cartItem.price.toString(),
+          quantity: cartItem.quantity.toString(),
+        })),
+        deliveryDetails: input,
+        restaurantId: restaurant?._id as string,
+      };
+      await createCheckoutSession(checkoutData);
+      clearCart();
+    } catch (error) {
+      console.log(error);
+    }
     };
   
     return (
@@ -107,7 +132,7 @@ const CheckoutConfirmPage = ({
                 type="text"
                 name="country"
                 value={input.country}
-                disabled
+               
                 onChange={changeEventHanlder}
               />
             </div>

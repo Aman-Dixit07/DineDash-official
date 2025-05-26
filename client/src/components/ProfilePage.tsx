@@ -11,16 +11,18 @@ import {
   import { Input } from "./ui/input";
   import { Label } from "./ui/label";
   import { Button } from "./ui/button";
+  import { useUserStore } from "@/store/useUserStore";
 
 const ProfilePage = () => {
+  const { user, updateProfile } = useUserStore();
     const [profileData, setProfileData] = useState({
-        fullname: "",
-        email: "",
-        address: "",
-        city: "",
-        country: "",
-        profilePicture: "",
-      });
+    fullname: user?.fullname || "",
+    email: user?.email || "",
+    address: user?.address || "",
+    city: user?.city || "",
+    country: user?.country || "",
+    profilePicture: user?.profilePicture || "",
+  });
     
       const [isLoading, setIsLoading] = useState<boolean>(false);
       const imageRef = useRef<HTMLInputElement | null>(null);
@@ -45,9 +47,22 @@ const ProfilePage = () => {
         setProfileData({ ...profileData, [name]: value });
       };
     
-      const updateProfileHandler = (e: FormEvent<HTMLFormElement>) => {
+      const updateProfileHandler =  async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         //api implementation
+         try {
+      setIsLoading(true);
+
+      await updateProfile({
+        ...profileData,
+        profilePicture: selectedProfilePicture,
+      });
+
+      setIsLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      setIsLoading(false);
+    }
       };
 
   return (
@@ -55,7 +70,7 @@ const ProfilePage = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar className="relative md:w-28 w-20 h-20">
-            <AvatarImage src={selectedProfilePicture} alt="profile pic" />
+            <AvatarImage src={user?.profilePicture} alt="profile pic" />
             <AvatarFallback>AD</AvatarFallback>
             <input
               ref={imageRef}
@@ -84,7 +99,7 @@ const ProfilePage = () => {
         <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
           <Mail className="text-gray-500" />
           <div className="w-full">
-            <Label>Email</Label>
+            <Label className=" text-black">Email</Label>
             <input
               disabled
               name="email"
@@ -97,7 +112,7 @@ const ProfilePage = () => {
         <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
           <LocateIcon className="text-gray-500" />
           <div className="w-full">
-            <Label>Address</Label>
+            <Label className=" text-black">Address</Label>
             <input
               name="address"
               value={profileData.address}
@@ -109,7 +124,7 @@ const ProfilePage = () => {
         <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
           <MapPin className="text-gray-500" />
           <div className="w-full">
-            <Label>City</Label>
+            <Label className=" text-black">City</Label>
             <input
               name="city"
               value={profileData.city}
@@ -121,7 +136,7 @@ const ProfilePage = () => {
         <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
           <MapPinnedIcon className="text-gray-500" />
           <div className="w-full">
-            <Label>Country</Label>
+            <Label className=" text-black">Country</Label>
             <input
               name="country"
               value={profileData.country}
