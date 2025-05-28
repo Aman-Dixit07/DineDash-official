@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { CheckoutSessionRequest, OrderState } from "@/types/orderType";
 
-const API_END_POINT: string = "http://localhost:8000/api/v1/order";
+const API_END_POINT: string = "https://dinedash-official.onrender.com/api/v1/order";
 
 axios.defaults.withCredentials = true;
 
