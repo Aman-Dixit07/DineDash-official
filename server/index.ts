@@ -10,11 +10,12 @@ import userRoute from "./routes/user.route";
 import restaurantRoute from "./routes/restaurant.route";
 import orderRoute from "./routes/order.route";
 import menuRoute from "./routes/menu.route";
-
+import path from "path";
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
+const DIRNAME = path.resolve();
 
 //DEFAULT MIDDLWARES
 app.use(morgan("dev"));
@@ -29,16 +30,26 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-//SIMPLE ROUTE
-app.get("/", (req: Request, res: Response) => {
-    res.send("SERVER IS RUNNING🎉🎉");
-  });
 
 //API'S
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/restaurant", restaurantRoute);
 app.use("/api/v1/menu", menuRoute);
 app.use("/api/v1/order", orderRoute);
+
+//joining frontend
+app.use(express.static(path.join(DIRNAME, "/client/dist")));
+app.use((req, res, next) => {
+  // If the request path starts with /api, let it fall through to other API handlers
+  // or eventually to a 404 handler if no API route matches.
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+
+  // For all other requests (that are not /api and not static files),
+  // serve the index.html from your client build.
+  res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"));
+});
 
 //LISTENING THE SERVER
 app.listen(port,()=>{
